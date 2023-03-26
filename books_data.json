@@ -1,0 +1,67 @@
+[
+  {
+    "title": "BIG MAGIC",
+    "author": "Elizabeth Gilbert",
+    "rating": "5",
+    "category": "highlight",
+    "type": "NonFiction",
+    "genre": "Self Help",
+    "description": "Readers of all ages and walks of life have drawn inspiration and empowerment from Elizabeth Gilbert’s books for years.",
+    "image_url": "https://images-na.ssl-images-amazon.com/images/I/81WcnNQ-TBL.jpg",
+    "rating_color": "pink",
+    "voters": "1.987",
+    "isbn": "9781594634727"
+  },
+  {
+    "title": "Ten Thousand Skies Above You",
+    "author": "Claudia Gray",
+    "rating": "5",
+    "category": "highlight",
+    "type": "Fiction",
+    "genre": "Young Adult",
+    "description": "The hunt for each splinter of Paul's soul sends Marguerite racing through a war-torn San Francisco.",
+    "image_url": "https://i.pinimg.com/originals/a8/b9/ff/a8b9ff74ed0f3efd97e09a7a0447f892.jpg",
+    "rating_color": "blue",
+    "voters": "1.987",
+    "isbn": "9780062279002"
+  },
+  {
+    "title": "A Tale For The Time Being",
+    "author": "Ruth Ozeki",
+    "rating": "5",
+    "category": "highlight",
+    "type": "Fiction",
+    "genre": "Fiction",
+    "description": "In Tokyo, sixteen-year-old Nao has decided there’s only one escape from her aching loneliness and her classmates’ bullying.",
+    "image_url": "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1613060369i/15811545.jpg",
+    "rating_color": "purple",
+    "voters": "1.987",
+    "isbn": "9780143124870"
+  },
+  {
+    "title": "The Great Gatsby",
+    "author": "F.Scott Fitzgerald",
+    "rating": "5",
+    "category": "highlight",
+    "type": "Fiction",
+    "genre": "Fiction",
+    "description": "The Great Gatsby, F. Scott Fitzgerald’s third book, stands as the supreme achievement of his career.",
+    "image_url": "https://images-na.ssl-images-amazon.com/images/I/81af+MCATTL.jpg",
+    "rating_color": "yellow",
+    "voters": "1.987",
+    "isbn": "9798745274824"
+  },
+  {
+    "title": "After You",
+    "author": "Jojo Moyes",
+    "rating": "5",
+    "category": "highlight",
+    "type": "Fiction",
+    "genre": "Romance",
+    "description": "Louisa Clark is no longer just an ordinary girl living an ordinary life. After the transformative six months spent.",
+    "image_url": "https://images-na.ssl-images-amazon.com/images/I/81UWB7oUZ0L.jpg",
+    "rating_color": "purple",
+    "voters": "1.987",
+    "isbn": "9780143108863"
+  }
+]

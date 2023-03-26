@@ -57,7 +57,7 @@ services:
 
   postgres:
     image: postgres:13.2
-    container_name: postgress
+    container_name: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:

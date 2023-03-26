@@ -7,14 +7,14 @@ const kafka = new Kafka({
 
 const producer = kafka.producer();
 
-async function send(message) {
+async function send(topic, message) {
   await producer.connect();
   await producer.send({
-    topic: "test",
-    messages: [{ value: message }],
+    topic: topic,
+    messages: [{ value: JSON.stringify(message) }],
   });
   await producer.disconnect();
-  console.log("Producer sent message:", message);
+  console.log("Producer sent message to topic", topic, ":", message);
 }
 
 module.exports = send;
