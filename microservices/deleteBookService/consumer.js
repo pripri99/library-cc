@@ -21,9 +21,18 @@ const run = async () => {
     eachMessage: async ({ topic, partition, message }) => {
       const isbn = message.value.toString();
       try {
+        // Retrieve book from the database
+        const result = await db.query(
+          "SELECT title FROM books WHERE isbn = $1",
+          [isbn]
+        );
+        const book = result.rows[0];
+
         // Delete book from the database
         await db.query("DELETE FROM books WHERE isbn = $1", [isbn]);
-        console.log(`Book with ISBN ${isbn} deleted from the database`);
+        console.log(
+          `Book ${book.title} with ISBN ${isbn} deleted from the database`
+        );
       } catch (err) {
         console.error("Failed to delete book from the database", err);
       }

@@ -40,6 +40,16 @@ app.get("/highlighted-books", async (req, res) => {
   }
 });
 
+app.get("/api/books", async (req, res) => {
+  try {
+    const result = await db.query("SELECT * FROM books");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Failed to fetch books", err);
+    res.status(500).json({ error: "Failed to fetch books" });
+  }
+});
+
 app.post("/api/books", express.json(), async (req, res) => {
   try {
     const book = req.body;
