@@ -1,16 +1,24 @@
+require("dotenv").config();
 const producer = require("./producer");
 const consumer = require("./consumer");
+const path = require("path");
 const db = require("./db");
 const express = require("express");
+const cors = require("cors");
 
 const app = express();
-const port = process.env.PORT || 3000;
+// Enable CORS middleware
+app.use(cors());
+const port = process.env.PORT || 3001;
+
+consumer.consumeMessage("addBook");
+consumer.consumeMessage("deleteBook");
 
 // Static Files
 app.use(express.static("public"));
 // Specific folder example
-app.use("/css", express.static(__dirname + "public/css"));
-app.use("/js", express.static(__dirname + "public/js"));
+app.use("/css", express.static(path.join(__dirname, "public/css")));
+app.use("/js", express.static(path.join(__dirname, "public/js")));
 
 // Set View's
 app.set("views", "./views");
@@ -24,7 +32,7 @@ app.get("/bookshelf", (req, res) => {
   res.sendFile(__dirname + "/views/bookshelf.html");
 });
 
-app.get("/modify-booklist-page", (req, res) => {
+app.get("/modify-booklist", (req, res) => {
   res.sendFile(__dirname + "/views/modifyBooklist.html");
 });
 
@@ -76,13 +84,34 @@ app.delete("/api/books/:isbn", async (req, res) => {
   }
 });
 
+app.get("/api/kafka-logs/:topic", async (req, res) => {
+  const topic = req.params.topic;
+  const sentMessages = await producer.getSentMessages(topic);
+  const receivedMessages = await consumer.getReceivedMessages(topic);
+  res.json({ sentMessages, receivedMessages });
+});
+redisClient.connect().catch((err) => {
+  console.error("Failed to connect to Redis:", err);
+  process.exit(1);
+});
+
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
 
-producer("addBook", {
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something went wrong!");
+});
+
+producer.send("addBook", {
   title: "Example Book",
   author: "John Doe",
   isbn: "1234567890",
 });
-producer("test", { message: "Hello, KafkaJS!" });
+producer.send("test", { message: "Hello, KafkaJS!" });
+
+process.on("SIGINT", async () => {
+  await redisClient.disconnect();
+  process.exit(0);
+});

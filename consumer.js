@@ -1,4 +1,10 @@
 const { Kafka } = require("kafkajs");
+const {
+  lpushAsync,
+  lrangeAsync,
+  connect,
+  disconnect,
+} = require("./redisClient");
 
 const kafka = new Kafka({
   clientId: "library-cc",
@@ -7,7 +13,21 @@ const kafka = new Kafka({
 
 const consumer = kafka.consumer({ groupId: "test-group" });
 
-async function start() {
+async function logReceivedMessage(topic, message) {
+  await connect();
+  await lpushAsync(
+    `receivedMessages:${topic}`,
+    JSON.stringify({ message, timestamp: new Date() })
+  );
+  await disconnect();
+}
+
+async function getReceivedMessages(topic) {
+  const messages = await lrangeAsync(`receivedMessages:${topic}`, 0, -1);
+  return messages.map((message) => JSON.parse(message));
+}
+
+async function consumeMessage() {
   await consumer.connect();
   await consumer.subscribe({ topic: "test", fromBeginning: true });
   await consumer.run({
@@ -15,10 +35,11 @@ async function start() {
       console.log("Consumer received message:", {
         value: message.value.toString(),
       });
+      await logReceivedMessage("test", message);
     },
   });
 }
 
-start().catch(console.error);
+consumeMessage().catch(console.error);
 
-module.exports = consumer;
+module.exports = { consumeMessage, getReceivedMessages };

@@ -1,4 +1,5 @@
 const { Kafka } = require("kafkajs");
+const { lpushAsync, lrangeAsync } = require("./redisClient");
 
 const kafka = new Kafka({
   clientId: "library-cc",
@@ -13,8 +14,23 @@ async function send(topic, message) {
     topic: topic,
     messages: [{ value: JSON.stringify(message) }],
   });
+  await redisClient.connect();
+  await logSentMessage(topic, message);
+  await redisClient.disconnect();
   await producer.disconnect();
   console.log("Producer sent message to topic", topic, ":", message);
 }
 
-module.exports = send;
+async function logSentMessage(topic, message) {
+  await lpushAsync(
+    `sentMessages:${topic}`,
+    JSON.stringify({ message, timestamp: new Date() })
+  );
+}
+
+async function getSentMessages(topic) {
+  const messages = await lrangeAsync(`sentMessages:${topic}`, 0, -1);
+  return messages.map((message) => JSON.parse(message));
+}
+
+module.exports = { send, getSentMessages };
