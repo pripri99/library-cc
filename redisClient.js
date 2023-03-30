@@ -43,4 +43,5 @@ module.exports = {
   lrangeAsync,
   connect,
   disconnect,
+  redisClient: client, // Add this line
 };

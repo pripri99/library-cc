@@ -1,6 +1,12 @@
 const { Kafka } = require("kafkajs");
 const db = require("../../db");
 const { addBookToDatabaseFromISBN } = require("../../addBooksToDatabase");
+const {
+  lpushAsync,
+  lrangeAsync,
+  connect,
+  disconnect,
+} = require("../../redisClient");
 
 // Initialize Kafka consumer
 const kafka = new Kafka({
@@ -9,6 +15,20 @@ const kafka = new Kafka({
 });
 
 const consumer = kafka.consumer({ groupId: "book-group" });
+
+async function logReceivedMessage(topic, message) {
+  await connect();
+  await lpushAsync(
+    `receivedMessages:${topic}`,
+    JSON.stringify({ message, timestamp: new Date() })
+  );
+  await disconnect();
+}
+
+async function getReceivedMessages(topic) {
+  const messages = await lrangeAsync(`receivedMessages:${topic}`, 0, -1);
+  return messages.map((message) => JSON.parse(message));
+}
 
 const run = async () => {
   // Connect to Kafka
@@ -37,6 +57,10 @@ const run = async () => {
               [book.title, book.author, book.isbn]
             );
             console.log(
+              `Book overwritten in the database: ${JSON.stringify(book)}`
+            );
+            await logReceivedMessage(
+              topic,
               `Book overwritten in the database: ${JSON.stringify(book)}`
             );
           } catch (err) {

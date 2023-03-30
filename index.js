@@ -4,6 +4,7 @@ const consumer = require("./consumer");
 const path = require("path");
 const db = require("./db");
 const express = require("express");
+const { redisClient } = require("./redisClient");
 const cors = require("cors");
 
 const app = express();
@@ -61,7 +62,7 @@ app.get("/api/books", async (req, res) => {
 app.post("/api/books", express.json(), async (req, res) => {
   try {
     const book = req.body;
-    await producer("addBook", book);
+    await producer.send("addBook", book);
     res.status(201).json({ message: "Book added successfully" });
   } catch (err) {
     console.error("Failed to add book through Kafka", err);
@@ -104,11 +105,6 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something went wrong!");
 });
 
-producer.send("addBook", {
-  title: "Example Book",
-  author: "John Doe",
-  isbn: "1234567890",
-});
 producer.send("test", { message: "Hello, KafkaJS!" });
 
 process.on("SIGINT", async () => {

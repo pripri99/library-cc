@@ -1,5 +1,11 @@
 const { Kafka } = require("kafkajs");
 const db = require("../../db");
+const {
+  lpushAsync,
+  lrangeAsync,
+  connect,
+  disconnect,
+} = require("../../redisClient");
 
 // Initialize Kafka consumer
 const kafka = new Kafka({
@@ -8,6 +14,20 @@ const kafka = new Kafka({
 });
 
 const consumer = kafka.consumer({ groupId: "delete-book-group" });
+
+async function logReceivedMessage(topic, message) {
+  await connect();
+  await lpushAsync(
+    `receivedMessages:${topic}`,
+    JSON.stringify({ message, timestamp: new Date() })
+  );
+  await disconnect();
+}
+
+async function getReceivedMessages(topic) {
+  const messages = await lrangeAsync(`receivedMessages:${topic}`, 0, -1);
+  return messages.map((message) => JSON.parse(message));
+}
 
 const run = async () => {
   // Connect to Kafka
@@ -31,6 +51,10 @@ const run = async () => {
         // Delete book from the database
         await db.query("DELETE FROM books WHERE isbn = $1", [isbn]);
         console.log(
+          `Book ${book.title} with ISBN ${isbn} deleted from the database`
+        );
+        await logReceivedMessage(
+          topic,
           `Book ${book.title} with ISBN ${isbn} deleted from the database`
         );
       } catch (err) {

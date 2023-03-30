@@ -35,7 +35,7 @@ async function consumeMessage() {
       console.log("Consumer received message:", {
         value: message.value.toString(),
       });
-      await logReceivedMessage("test", message);
+      await logReceivedMessage(topic, message.value.toString());
     },
   });
 }
