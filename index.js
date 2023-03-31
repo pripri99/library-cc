@@ -15,6 +15,12 @@ const port = process.env.PORT || 3001;
 consumer.consumeMessage("addBook");
 consumer.consumeMessage("deleteBook");
 
+app.use(
+  cors({
+    origin: ["http://localhost:3001"], // Replace with the origins you want to allow
+  })
+);
+
 // Static Files
 app.use(express.static("public"));
 // Specific folder example

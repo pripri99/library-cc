@@ -283,8 +283,8 @@ async function main(count) {
   }
 }
 
-main(1);
-
 module.exports = {
   addBookToDatabaseFromISBN,
 };
+
+//main(1);
