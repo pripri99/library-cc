@@ -65,32 +65,6 @@ app.get("/api/books", async (req, res) => {
   }
 });
 
-app.post("/api/books", express.json(), async (req, res) => {
-  try {
-    const book = req.body;
-    await producer.send("addBook", book);
-    res.status(201).json({ message: "Book added successfully" });
-  } catch (err) {
-    console.error("Failed to add book through Kafka", err);
-    res.status(500).json({ error: "Failed to add book through Kafka" });
-  }
-});
-
-app.delete("/api/books/:isbn", async (req, res) => {
-  try {
-    const isbn = req.params.isbn;
-    await producer("deleteBook", isbn);
-    res
-      .status(200)
-      .json({ message: "Book deletion request sent successfully" });
-  } catch (err) {
-    console.error("Failed to send book deletion request through Kafka", err);
-    res
-      .status(500)
-      .json({ error: "Failed to send book deletion request through Kafka" });
-  }
-});
-
 app.get("/api/kafka-logs/:topic", async (req, res) => {
   const topic = req.params.topic;
   const sentMessages = await producer.getSentMessages(topic);
