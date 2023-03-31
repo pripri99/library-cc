@@ -1,19 +1,82 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const { Pool } = require("pg");
+const { Kafka } = require("kafkajs");
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post("/books", (req, res) => {
-  const book = req.body;
+// Create a pool of Postgres clients to handle database connections
+const pool = new Pool({
+  user: "postgres",
+  password: "postgres",
+  host: "db",
+  port: 5432,
+  database: "booksdb",
+  ssl: false,
+});
 
-  // Add book to the database
-  // ...
+// Create the books table if it does not exist
+async function createBooksTable() {
+  const client = await pool.connect();
+  try {
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS books (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        author TEXT NOT NULL,
+        isbn TEXT NOT NULL UNIQUE
+      );
+    `);
+    console.log("Created books table");
+  } catch (error) {
+    console.error("Error creating books table:", error);
+  } finally {
+    client.release();
+  }
+}
 
-  res.status(201).json({ message: "Book added", book });
+// Call the createBooksTable function when the application starts
+createBooksTable();
+
+// Create a Kafka consumer to receive add-book messages from the queue
+const kafka = new Kafka({
+  clientId: "add-book-service",
+  brokers: ["localhost:9092"],
+});
+const consumer = kafka.consumer({ groupId: "add-book-service-group" });
+
+async function startConsumer() {
+  await consumer.connect();
+  await consumer.subscribe({ topic: "add-book" });
+
+  await consumer.run({
+    eachMessage: async ({ topic, partition, message }) => {
+      const { title, author, isbn } = JSON.parse(message.value.toString());
+
+      try {
+        // Use a Postgres client from the pool to execute an INSERT query
+        const client = await pool.connect();
+        const result = await client.query(
+          "INSERT INTO books (title, author, isbn) VALUES ($1, $2, $3) ON CONFLICT (isbn) DO UPDATE SET title = excluded.title, author = excluded.author RETURNING *",
+          [title, author, isbn]
+        );
+        const addedBook = result.rows[0];
+        client.release();
+
+        console.log("Added book:", addedBook);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  });
+}
+
+startConsumer().catch((error) => {
+  console.error("Error starting consumer:", error);
 });
 
 const PORT = process.env.PORT || 3001;
