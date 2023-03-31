@@ -42,16 +42,16 @@ async function createBooksTable() {
 // Call the createBooksTable function when the application starts
 createBooksTable();
 
-// Create a Kafka consumer to receive add-book messages from the queue
+// Create a Kafka consumer to receive add-book-requests messages from the queue
 const kafka = new Kafka({
   clientId: "add-book-service",
-  brokers: ["localhost:9092"],
+  brokers: ["kafka:9092"],
 });
 const consumer = kafka.consumer({ groupId: "add-book-service-group" });
 
 async function startConsumer() {
   await consumer.connect();
-  await consumer.subscribe({ topic: "add-book" });
+  await consumer.subscribe({ topic: "add-book-requests" });
 
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
@@ -80,6 +80,23 @@ startConsumer().catch((error) => {
 });
 
 const PORT = process.env.PORT || 3001;
+
+app.post("/add-book-requests", async (req, res) => {
+  const { title, author, isbn } = req.body;
+
+  // Send the book to the Kafka queue
+  const producer = kafka.producer();
+  await producer.connect();
+
+  await producer.send({
+    topic: "add-book-requests",
+    messages: [{ value: JSON.stringify({ title, author, isbn }) }],
+  });
+
+  await producer.disconnect();
+
+  res.status(200).json({ message: "Book request queued" });
+});
 
 app.listen(PORT, () => {
   console.log(`Book service is running on port ${PORT}`);

@@ -2,30 +2,34 @@ version: "3.8"
 
 services:
   db:
-    image: bitnami/postgresql:13
+    image: postgres:latest
     environment:
-      POSTGRESQL_USERNAME: postgres
-      POSTGRESQL_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRESQL_DATABASE: booksdb
     ports:
       - "5432:5432"
     volumes:
-      - postgres-data:/bitnami/postgresql/data
+      - db-data:/var/lib/postgresql/data
 
   kafka:
-    image: bitnami/kafka:3
+    image: bitnami/kafka:latest
     environment:
-      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
     ports:
       - "9092:9092"
     depends_on:
       - zookeeper
 
   zookeeper:
-    image: bitnami/zookeeper:3
+    image: bitnami/zookeeper:latest
     ports:
       - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
 
   app:
     build: .
@@ -40,4 +44,4 @@ services:
       - kafka
 
 volumes:
-  postgres-data:
+  db-data:
