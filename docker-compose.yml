@@ -18,15 +18,15 @@ services:
     networks:
       - backend
 
-  addBookService:
-    build: ./microservices/addBookService
+  add-book-service:
+    build: ./microservices/addbookservice
     depends_on:
       - kafka
     networks:
       - backend
 
-  deleteBookService:
-    build: ./microservices/deleteBookService
+  delete-book-service:
+    build: ./microservices/deletebookservice
     depends_on:
       - kafka
     networks:
@@ -104,6 +104,28 @@ services:
       - "8080:8080"
     networks:
       - backend
+
+  keycloak:
+    image: jboss/keycloak:15.0.2
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: keycloak
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      # Uncomment the following line if you want to import a realm configuration at startup
+      # KEYCLOAK_IMPORT: /config/realm-export.json
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+    networks:
+      - backend
+    # Uncomment the following lines if you want to import a realm configuration at startup
+    # volumes:
+    #   - ./config/realm-export.json:/config/realm-export.json:ro
 
 networks:
   backend:

@@ -1,12 +1,12 @@
 const { Kafka } = require("kafkajs");
-const db = require("../../db");
-const { addBookToDatabaseFromISBN } = require("../../addBooksToDatabase");
+const db = require("./db");
+const { addBookToDatabaseFromISBN } = require("./addBooksToDatabase");
 const {
   lpushAsync,
   lrangeAsync,
   connect,
   disconnect,
-} = require("../../redisClient");
+} = require("./redisClient");
 
 // Initialize Kafka consumer
 const kafka = new Kafka({
