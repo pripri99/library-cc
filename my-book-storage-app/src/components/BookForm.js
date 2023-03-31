@@ -1,37 +1,42 @@
 import React, { useState } from "react";
-import axios from "axios";
 
-const BookForm = () => {
+const BookForm = ({ onAddBook }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [isbn, setIsbn] = useState("");
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
-    const { data } = await axios.post(
-      "http://localhost:3000/api/books",
-      {
+    // Validate
+    if (title === "" || author === "" || isbn === "") {
+      alert("Please fill in all fields");
+    } else {
+      // Instantiate book
+      const book = {
         title,
         author,
         isbn,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+      };
 
-    console.log(data);
+      // Call onAddBook prop to add book to state and local storage
+      onAddBook(book);
+
+      // Show success message
+      alert("Book Added");
+
+      // Clear fields
+      setTitle("");
+      setAuthor("");
+      setIsbn("");
+    }
   };
 
   return (
     <div className="container mt-4">
       <h1 className="display-4 text-center">
         <i className="fas fa-book-open text-primary"></i> My
-        <span className="text-primary">Book</span>
-        List
+        <span className="text-primary">Book</span>List
       </h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
