@@ -15,7 +15,7 @@ const pool = new Pool({
   password: "postgres",
   host: "db",
   port: 5432,
-  database: "booksdb",
+  database: "books",
   ssl: false,
 });
 
@@ -82,6 +82,7 @@ startConsumer().catch((error) => {
 const PORT = process.env.PORT || 3001;
 
 app.post("/add-book-requests", async (req, res) => {
+  console.log(req.body); // log the request body to the console
   const { title, author, isbn } = req.body;
 
   // Send the book to the Kafka queue

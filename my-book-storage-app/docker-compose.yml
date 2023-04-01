@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    command: start-dev
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/realm-export.json
+      KEYCLOAK_HOSTNAME: localhost
+      KEYCLOAK_STRICT_HOSTNAME_RESOLUTION: "false"
+      KEYCLOAK_DISABLE_THIRD_PARTY_COOKIES: "true"
+    volumes:
+      - ./realm-export.json:/tmp/realm-export.json
+    ports:
+      - "8080:8080"

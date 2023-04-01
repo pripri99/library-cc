@@ -1,20 +1,24 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import BookForm from "./components/BookForm";
 import BookList from "./components/BookList";
-import { addBook } from "./utils/localStorage";
 import axios from "axios";
+import keycloak from "./keycloak";
+import { ReactKeycloakProvider } from "@react-keycloak/web";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [books, setBooks] = useState([]);
 
+  const API_URL = "http://localhost:3001";
+
   const onAddBook = async (book) => {
     try {
       // Call the add-book microservice
-      const response = await axios.post("http://localhost:3001/books", book);
+      const response = await axios.post(`${API_URL}/add-book-requests`, book);
 
       // Add book to state
-      setBooks((prevBooks) => [...prevBooks, response.data.book]);
+      setBooks((prevBooks) => [...prevBooks, book]);
 
       // Show success message
       alert(response.data.message);
@@ -30,15 +34,24 @@ function App() {
         <Route
           path="/"
           element={
-            <>
-              <BookForm onAddBook={onAddBook} />
-              <BookList books={books} />
-            </>
+            <ProtectedRoute>
+              <>
+                <BookForm onAddBook={onAddBook} />
+                <BookList books={books} />
+              </>
+            </ProtectedRoute>
           }
         />
+        {/* Add other routes here */}
       </Routes>
     </Router>
   );
 }
 
-export default App;
+const AppWrapper = () => (
+  <ReactKeycloakProvider authClient={keycloak}>
+    <App />
+  </ReactKeycloakProvider>
+);
+
+export default AppWrapper;

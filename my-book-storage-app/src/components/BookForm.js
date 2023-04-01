@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { sendAddBookRequest } from "../utils/microservice";
 
 const BookForm = ({ onAddBook }) => {
   const [title, setTitle] = useState("");
@@ -19,12 +18,11 @@ const BookForm = ({ onAddBook }) => {
         author,
         isbn,
       };
-      sendAddBookRequest(book);
       // Call onAddBook prop to add book to state and local storage
       onAddBook(book);
 
       // Show success message
-      alert("Book Added");
+      //alert("Book Added");
 
       // Clear fields
       setTitle("");

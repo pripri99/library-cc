@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRESQL_DATABASE: booksdb
+      POSTGRES_DB: books
     ports:
       - "5432:5432"
     volumes:
@@ -34,7 +34,7 @@ services:
   app:
     build: .
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/booksdb
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/books
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       KAFKA_TOPIC: add-book-requests
     ports:
