@@ -13,9 +13,10 @@
 
 ## my-book-storage-app
 
+- [docker-compose.yml](my-book-storage-app/docker-compose.yml)
 - [package-lock.json](my-book-storage-app/package-lock.json)
 - [package.json](my-book-storage-app/package.json)
-- [server.js](my-book-storage-app/server.js)
+- [webpack.config.js](my-book-storage-app/webpack.config.js)
 
 ### node_modules
 
@@ -28,6 +29,8 @@
 - [manifest.json](my-book-storage-app/public/manifest.json)
 - [robots.txt](my-book-storage-app/public/robots.txt)
 
+### realm-export.json
+
 ### src
 
 - [App.css](my-book-storage-app/src/App.css)
@@ -35,8 +38,13 @@
 - [App.test.js](my-book-storage-app/src/App.test.js)
 - [index.css](my-book-storage-app/src/index.css)
 - [index.js](my-book-storage-app/src/index.js)
+- [keycloak.js](my-book-storage-app/src/keycloak.js)
 - [logo.svg](my-book-storage-app/src/logo.svg)
 - [reportWebVitals.js](my-book-storage-app/src/reportWebVitals.js)
 - [setupTests.js](my-book-storage-app/src/setupTests.js)
+
+### tmp
+
+- [realm-export.json](my-book-storage-app/tmp/realm-export.json)
 
 

@@ -7,10 +7,11 @@ services:
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
       KEYCLOAK_IMPORT: /tmp/realm-export.json
       KEYCLOAK_HOSTNAME: localhost
       KEYCLOAK_STRICT_HOSTNAME_RESOLUTION: "false"
-      KEYCLOAK_DISABLE_THIRD_PARTY_COOKIES: "true"
     volumes:
       - ./realm-export.json:/tmp/realm-export.json
     ports:
