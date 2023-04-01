@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import BookForm from "./components/BookForm";
 import BookList from "./components/BookList";
+import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 import axios from "axios";
 
 import keycloak from "./keycloak";
 import { ReactKeycloakProvider } from "@react-keycloak/web";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const [books, setBooks] = useState([]);
@@ -32,6 +33,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route
           path="/"
           element={

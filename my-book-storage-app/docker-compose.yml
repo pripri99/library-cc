@@ -2,12 +2,9 @@ version: "3.4"
 services:
   keycloak:
     image: jboss/keycloak:15.0.2
-    volumes:
-      - ./realm-export.json:/tmp/keycloak/config/realm-export.json
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
-      KEYCLOAK_IMPORT: /tmp/keycloak/config/realm-export.json
       DB_VENDOR: POSTGRES
       DB_ADDR: postgres
       DB_DATABASE: keycloak
@@ -16,11 +13,6 @@ services:
       DB_PASSWORD: password
     ports:
       - "18080:18080"
-    command:
-      - "-b"
-      - "0.0.0.0"
-      - "-Djboss.socket.binding.port-offset=10000"
-      - "-Djboss.as.management.blocking.timeout=900000"
     #restart: on-failure
     depends_on:
       - postgres

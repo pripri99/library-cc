@@ -1,19 +1,22 @@
-import React from "react";
-import { Route, Navigate } from "react-router-dom";
-import { useKeycloak } from "@react-keycloak/web";
+import React, { useEffect } from "react";
+import { Route, useLocation, useNavigate } from "react-router-dom";
 
 const ProtectedRoute = ({ element, ...rest }) => {
-  const { initialized, keycloak } = useKeycloak();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const accessToken = sessionStorage.getItem("access_token");
 
-  if (!initialized) {
-    return <div>Loading...</div>;
+  useEffect(() => {
+    if (!accessToken) {
+      navigate("/login");
+    }
+  }, [accessToken, navigate]);
+
+  if (!accessToken) {
+    return null;
   }
 
-  if (keycloak.authenticated) {
-    return <Route {...rest} element={element} />;
-  } else {
-    return <Navigate to="/login" />;
-  }
+  return <Route {...rest} element={element} />;
 };
 
 export default ProtectedRoute;

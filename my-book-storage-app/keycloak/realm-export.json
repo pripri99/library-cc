@@ -1,0 +1,36 @@
+{
+  "id": "book-app",
+  "realm": "book-app",
+  "displayName": "Book App Realm",
+  "enabled": true,
+  "sslRequired": "external",
+  "clients": [
+    {
+      "id": "my-book-storage-app",
+      "clientId": "my-book-storage-app",
+      "name": "My Book Storage App",
+      "rootUrl": "http://localhost:3000",
+      "baseUrl": "http://localhost:3000",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "my-book-storage-app-secret",
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"],
+      "protocol": "openid-connect",
+      "attributes": {
+        "access.token.lifespan": 3600,
+        "sso.session.idle.timeout": 1800,
+        "sso.session.max.lifespan": 7200,
+        "content-security-policy": "frame-src http://localhost:3000;",
+        "cors": "true",
+        "cors.allowed.methods": "POST,PUT,DELETE,GET",
+        "cors.allowed.headers": "Authorization,Content-Type,Accept",
+        "cors.exposed.headers": "Access-Control-Allow-Origin,Access-Control-Allow-Credentials",
+        "cors.allowed.origins": "http://localhost:3000"
+      },
+      "publicClient": false,
+      "frontchannelLogout": false,
+      "fullScopeAllowed": true
+    }
+  ]
+}

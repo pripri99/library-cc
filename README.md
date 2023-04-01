@@ -1,22 +1,15 @@
 # Project Contents
 
-## add-book-service
-
-- [docker-compose.yml](add-book-service/docker-compose.yml)
-- [Dockerfile](add-book-service/Dockerfile)
-- [index.js](add-book-service/index.js)
-- [package-lock.json](add-book-service/package-lock.json)
-- [package.json](add-book-service/package.json)
-
-### node_modules
-
-
 ## my-book-storage-app
 
 - [docker-compose.yml](my-book-storage-app/docker-compose.yml)
 - [package-lock.json](my-book-storage-app/package-lock.json)
 - [package.json](my-book-storage-app/package.json)
+- [realm-export.json](my-book-storage-app/realm-export.json)
 - [webpack.config.js](my-book-storage-app/webpack.config.js)
+
+### keycloak
+
 
 ### node_modules
 
@@ -28,8 +21,6 @@
 - [logo512.png](my-book-storage-app/public/logo512.png)
 - [manifest.json](my-book-storage-app/public/manifest.json)
 - [robots.txt](my-book-storage-app/public/robots.txt)
-
-### realm-export.json
 
 ### src
 
@@ -45,6 +36,5 @@
 
 ### tmp
 
-- [realm-export.json](my-book-storage-app/tmp/realm-export.json)
 
 
