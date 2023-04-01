@@ -1,18 +1,38 @@
-version: "3.9"
-
+version: "3.4"
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    command: start-dev
+    image: jboss/keycloak:15.0.2
+    volumes:
+      - ./realm-export.json:/tmp/keycloak/config/realm-export.json
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      KEYCLOAK_IMPORT: /tmp/realm-export.json
-      KEYCLOAK_HOSTNAME: localhost
-      KEYCLOAK_STRICT_HOSTNAME_RESOLUTION: "false"
-    volumes:
-      - ./realm-export.json:/tmp/realm-export.json
+      KEYCLOAK_IMPORT: /tmp/keycloak/config/realm-export.json
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_SCHEMA: public
+      DB_PASSWORD: password
     ports:
-      - "8080:8080"
+      - "18080:18080"
+    command:
+      - "-b"
+      - "0.0.0.0"
+      - "-Djboss.socket.binding.port-offset=10000"
+      - "-Djboss.as.management.blocking.timeout=900000"
+    #restart: on-failure
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+volumes:
+  postgres_data:
+    name: keycloak_postgres_data
+    driver: local
