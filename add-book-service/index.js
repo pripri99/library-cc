@@ -3,9 +3,29 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const { Pool } = require("pg");
 const { Kafka } = require("kafkajs");
+const session = require("express-session");
+const Keycloak = require("keycloak-connect");
 
 const app = express();
+const memoryStore = new session.MemoryStore();
 
+// Configure express-session
+app.use(
+  session({
+    secret: "your-session-secret",
+    resave: false,
+    saveUninitialized: true,
+    store: memoryStore,
+  })
+);
+
+// Configure Keycloak
+const keycloak = new Keycloak({ store: memoryStore });
+
+// Use Keycloak middleware to protect routes
+app.use(keycloak.middleware());
+
+// Use cors and bodyParser middleware
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -81,7 +101,7 @@ startConsumer().catch((error) => {
 
 const PORT = process.env.PORT || 3001;
 
-app.post("/add-book-requests", async (req, res) => {
+app.post("/add-book-requests", keycloak.protect(), async (req, res) => {
   console.log(req.body); // log the request body to the console
   const { title, author, isbn } = req.body;
 

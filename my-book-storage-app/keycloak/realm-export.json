@@ -4,6 +4,7 @@
   "displayName": "Book App Realm",
   "enabled": true,
   "sslRequired": "external",
+  "registrationAllowed": true,
   "clients": [
     {
       "id": "my-book-storage-app",
@@ -28,7 +29,7 @@
         "cors.exposed.headers": "Access-Control-Allow-Origin,Access-Control-Allow-Credentials",
         "cors.allowed.origins": "http://localhost:3000"
       },
-      "publicClient": false,
+      "publicClient": true,
       "frontchannelLogout": false,
       "fullScopeAllowed": true
     }
