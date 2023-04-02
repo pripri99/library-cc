@@ -5,6 +5,7 @@ const { Pool } = require("pg");
 const { Kafka } = require("kafkajs");
 const session = require("express-session");
 const Keycloak = require("keycloak-connect");
+const { v4: uuidv4 } = require("uuid");
 
 const app = express();
 const memoryStore = new session.MemoryStore();
@@ -102,21 +103,24 @@ startConsumer().catch((error) => {
 const PORT = process.env.PORT || 3001;
 
 app.post("/add-book-requests", keycloak.protect(), async (req, res) => {
-  console.log(req.body); // log the request body to the console
+  console.log(req.body);
   const { title, author, isbn } = req.body;
 
-  // Send the book to the Kafka queue
+  // Generate a job ID using UUID
+  const jobId = uuidv4();
+
+  // Send the book and job ID to the Kafka queue
   const producer = kafka.producer();
   await producer.connect();
 
   await producer.send({
     topic: "add-book-requests",
-    messages: [{ value: JSON.stringify({ title, author, isbn }) }],
+    messages: [{ value: JSON.stringify({ jobId, title, author, isbn }) }],
   });
 
   await producer.disconnect();
 
-  res.status(200).json({ message: "Book request queued" });
+  res.status(200).json({ message: "Book request queued", jobId });
 });
 
 app.listen(PORT, () => {

@@ -13,6 +13,7 @@ import {
 const App = () => {
   const { keycloak, initialized } = useKeycloak();
   const [books, setBooks] = useState([]);
+  const [jobIds, setJobIds] = useState([]);
 
   useEffect(() => {
     setBooks(getBooksFromLocalStorage());
@@ -37,6 +38,12 @@ const App = () => {
         }
       );
 
+      // Save the job ID in state
+      setJobIds((prevJobIds) => {
+        const updatedJobIds = [...prevJobIds, response.data.jobId];
+        return updatedJobIds;
+      });
+
       // Add book to state
       setBooks((prevBooks) => {
         const updatedBooks = [...prevBooks, book];
@@ -48,7 +55,7 @@ const App = () => {
       alert(response.data.message);
     } catch (error) {
       console.error(error);
-      alert("Failed to add book");
+      alert("Failed to add book ");
     }
   };
 
@@ -85,23 +92,25 @@ const App = () => {
 
   return (
     <Router>
-      <div className="app-container">
-        <Sidebar
-          keycloak={keycloak}
-          fetchProtectedResource={fetchProtectedResource}
-        />
-        <div className="content-container">
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <BookForm onAddBook={onAddBook} />
-                  <BookList books={books} onDeleteBook={onDeleteBook} />
-                </>
-              }
-            />
-          </Routes>
+      <div className="container-fluid">
+        <div className="app-container row">
+          <Sidebar
+            keycloak={keycloak}
+            fetchProtectedResource={fetchProtectedResource}
+          />
+          <div className="content-container col">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <>
+                    <BookForm onAddBook={onAddBook} />
+                    <BookList books={books} onDeleteBook={onDeleteBook} />
+                  </>
+                }
+              />
+            </Routes>
+          </div>
         </div>
       </div>
     </Router>

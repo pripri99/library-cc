@@ -3,7 +3,7 @@ import "./Sidebar.css";
 
 const Sidebar = ({ keycloak, fetchProtectedResource }) => {
   return (
-    <div className="sidebar">
+    <div className="sidebar col-auto">
       <h2>Welcome, {keycloak.tokenParsed.name}!</h2>
       <button onClick={fetchProtectedResource}>
         Fetch Unknown Protected Resource
