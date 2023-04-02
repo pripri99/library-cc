@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useKeycloak } from "@react-keycloak/web";
 import BookForm from "./components/BookForm";
 import BookList from "./components/BookList";
+import Sidebar from "./components/Sidebar";
 import axios from "axios";
+import {
+  saveBooksToLocalStorage,
+  getBooksFromLocalStorage,
+} from "./utils/localStorage";
 
 const App = () => {
   const { keycloak, initialized } = useKeycloak();
   const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    setBooks(getBooksFromLocalStorage());
+  }, []);
+
+  const onDeleteBook = (isbn) => {
+    const updatedBooks = books.filter((book) => book.isbn !== isbn);
+    setBooks(updatedBooks);
+    saveBooksToLocalStorage(updatedBooks);
+  };
+
   const onAddBook = async (book) => {
     try {
       // Call the add-book microservice
@@ -22,7 +38,11 @@ const App = () => {
       );
 
       // Add book to state
-      setBooks((prevBooks) => [...prevBooks, book]);
+      setBooks((prevBooks) => {
+        const updatedBooks = [...prevBooks, book];
+        saveBooksToLocalStorage(updatedBooks);
+        return updatedBooks;
+      });
 
       // Show success message
       alert(response.data.message);
@@ -65,22 +85,25 @@ const App = () => {
 
   return (
     <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <h2>Welcome, {keycloak.tokenParsed.name}!</h2>
-              <button onClick={fetchProtectedResource}>
-                Fetch Unknown Protected Resource
-              </button>
-              <button onClick={() => keycloak.logout()}>Logout</button>
-              <BookForm onAddBook={onAddBook} />
-              <BookList books={books} />
-            </>
-          }
+      <div className="app-container">
+        <Sidebar
+          keycloak={keycloak}
+          fetchProtectedResource={fetchProtectedResource}
         />
-      </Routes>
+        <div className="content-container">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <BookForm onAddBook={onAddBook} />
+                  <BookList books={books} onDeleteBook={onDeleteBook} />
+                </>
+              }
+            />
+          </Routes>
+        </div>
+      </div>
     </Router>
   );
 };

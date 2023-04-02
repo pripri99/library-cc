@@ -1,0 +1,25 @@
+.sidebar {
+  width: 200px;
+  min-height: 100vh;
+  background-color: #282c34;
+  color: white;
+  padding: 1rem;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+}
+
+.sidebar button {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+  background-color: #61dafb;
+  color: #282c34;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+}

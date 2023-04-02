@@ -1,11 +1,9 @@
 import React from "react";
 import Book from "./Book";
-import { removeBook } from "../utils/localStorage";
 
-const BookList = ({ books }) => {
+const BookList = ({ books, onDeleteBook }) => {
   const handleDelete = (isbn) => {
-    // Remove book from local storage
-    removeBook(isbn);
+    onDeleteBook(isbn);
   };
 
   return (
@@ -21,7 +19,7 @@ const BookList = ({ books }) => {
         </thead>
         <tbody>
           {books.map((book) => (
-            <Book key={book.isbn} book={book} onDelete={handleDelete} />
+            <Book key={book.isbn} book={book} onDeleteBook={handleDelete} />
           ))}
         </tbody>
       </table>

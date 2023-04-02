@@ -1,10 +1,10 @@
 import React from "react";
 
-const Book = ({ book, onDelete }) => {
+const Book = ({ book, onDeleteBook }) => {
   const { title, author, isbn } = book;
 
   const handleDelete = () => {
-    onDelete(isbn);
+    onDeleteBook(isbn);
   };
 
   return (
