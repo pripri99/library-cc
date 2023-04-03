@@ -49,5 +49,14 @@ services:
     environment:
       - ENCRYPTION_KEY=default_encryption_key
 
+  observer:
+    build: ./observer
+    ports:
+      - "4000:4000"
+    depends_on:
+      - kafka
+    environment:
+      - PORT=4000
+
 volumes:
   db-data:
