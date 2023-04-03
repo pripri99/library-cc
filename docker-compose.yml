@@ -44,6 +44,7 @@ services:
   executor:
     build: ./executor
     depends_on:
+      - server
       - db
       - kafka
     environment:
@@ -64,6 +65,8 @@ services:
       - "3000:3000"
     depends_on:
       - server
+    environment:
+      - REACT_APP_ENCRYPTION_KEY=default_encryption_key
 
 volumes:
   db-data:
