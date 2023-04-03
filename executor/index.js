@@ -3,6 +3,8 @@ const git = require("simple-git");
 const CryptoJS = require("crypto-js");
 const dotenv = require("dotenv");
 const fs = require("fs").promises;
+const URL = require("url");
+const path = require("path");
 
 dotenv.config();
 
@@ -20,6 +22,10 @@ const decrypt = (ciphertext) => {
 };
 
 const processJob = async (job) => {
+  const repoURL = new URL.URL(job.GIT_REPO);
+  const repoPathName = repoURL.pathname;
+  const repoDirName = path.basename(repoPathName, ".git");
+
   // Remove the folder if it exists
   try {
     await fs.rmdir("book-app-main", { recursive: true });
@@ -33,7 +39,7 @@ const processJob = async (job) => {
   const decryptedCredentials = decrypt(job.credentials);
 
   // Execute the main function (assuming it's exported by the repo)
-  const main = require(`./${job.GIT_REPO}/main`);
+  const main = require(`./${repoDirName}/main`);
   const result = await main({
     dataSourceLinks: job.data_source_links,
     data: job.data,

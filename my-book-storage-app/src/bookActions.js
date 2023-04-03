@@ -17,7 +17,7 @@ export const onAddBook = async (
         // Your actual database credentials
         user: "postgres",
         password: "postgres",
-        host: "localhost",
+        host: "db",
         port: "5432",
         database: "books",
       }),
