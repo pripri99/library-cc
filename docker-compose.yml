@@ -58,5 +58,12 @@ services:
     environment:
       - PORT=4000
 
+  frontend:
+    build: ./my-book-storage-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+
 volumes:
   db-data:

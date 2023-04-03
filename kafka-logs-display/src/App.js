@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 
-const API_BASE_URL = "http://localhost:3000"; // Replace with your server's base URL
+const API_BASE_URL = "http://localhost:6000"; // Replace with your server's base URL
 
 function App() {
   const [topic, setTopic] = useState("addBook");
